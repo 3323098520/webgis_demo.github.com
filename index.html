@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" > 
+        <meta charset="utf-8">
+        <title>上机2演示</title>
+        <script type="text/javascript">
+            window._AMapSecurityConfig = {
+                securityJsCode:'bfa5ad245d4c17d6ebe1083fa179cccc',//安全密钥
+            }
+        </script>
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=66c4689c55fc9d5459ef4d9965de066d"></script> 
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=66c4689c55fc9d5459ef4d9965de066d&plugin=AMap.Walking"></script>
+        <style type="text/css">
+            html {
+                height: 100%
+            }
+            
+            body {
+                height: 100%;
+                margin: 0px;
+                padding: 0px
+            }
+            #result {
+                position: absolute;
+                background-color: white;
+                max-height: 60%;
+                overflow-y: auto;
+                top: 150px;
+                right: 10px;
+                width: 280px;
+            }
+            #container {
+                width:1000px; height: 90%;
+                position: fixed;
+                bottom:5px;
+                right: 1px;
+                border: 4px dotted rgb(14, 166, 231);
+                
+            }
+            #head {
+                font-size: 36px;
+                color:bisque;
+                background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#005e61), to(#033447));
+                position: fixed;
+                top:0;
+                height: 8.5%;
+                width:100%;
+                text-align: center;
+            }
+            #menu {
+                border-top: 4px dotted rgb(14, 166, 231);
+                background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#033447), to(#005e61));
+                height: 90.5%;
+                position: fixed;
+                bottom: 5px;
+                right: 1002px;
+                left:0;
+            }
+
+            li{
+                position:relative;
+                left: 50px;
+            }
+            span{
+                position:relative;
+                left: 100px;
+            }
+            input{
+                position:relative;
+                left: 100px;
+                width: 100px;
+                background: hsla(0, 9%, 39%, 0.707);
+                border-radius: 2px;
+            }
+            button:hover {
+                background-color: rgb(37, 43, 72);
+              }
+              
+        </style>
+    </head>
+    <body>
+        <div id="head">高德地图API开发实例</div>
+        <div id="menu">
+            <h1 style="color: #000000;">Menu&nbsp<button type="button" onclick="shuaxin()" style="position: absolute;left:307px;top:35px">刷新界面</button></h1>
+            
+                <li style="color: #000000;">位置查询</li><br>
+                <span style="width:8rem;color:darkgray" >请输入关键字</span><input  id="tipinput">
+                <span style="width:8rem;color:darkgray" ><button type="button" onclick=" qingkong1()">点击清空</button></span><br>
+                <br>
+                <li style="color: #000000;">路径查询</li><br>
+                <span style="width:8rem;color:darkgray" >请输入出发地</span><input  id="chufainput" >
+                <br><br>
+                <span style="width:8rem;color:darkgray" >请输入目的地</span><input  id="mudiinput" >
+                <button type="button" onclick=" qingkong2()"  style="position: absolute;left:306px;">点击清空</button>
+                <br><br>
+                <span style="width:8rem;color:darkgray" >请选择出行方式</span>
+                 &nbsp;&nbsp;
+                <span colspan="4">
+                    <select id="chuxing">
+                        <option>步行</option>
+                        <option>....</option>
+                        
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" onclick="walkway()">点击查询</button>
+                    </span>   
+        </div>
+        <div id="container"></div> 
+        <div id="result"></div>
+        <script>
+            
+            var map = new AMap.Map('container', {
+                resizeEnable: true, //是否监控地图容器尺寸变化
+                zoom:16, //初始化地图层级
+                center: [117.146529,34.214219] //初始化地图中心点
+            });
+        
+            map.setMapStyle('amap://styles/blue');//地图样式
+
+            //   添加地图插件
+         
+           map.plugin(["AMap.Scale"], function () {
+           map.addControl(new AMap.Scale()); // 比例尺条控件
+          });
+
+        
+          AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
+            var autoOptions = {
+              city: "徐州", //城市，默认全国
+              input: "tipinput"//使用输入的input的id
+            };
+            autocomplete= new AMap.Autocomplete(autoOptions);
+            var placeSearch = new AMap.PlaceSearch({
+                  city:'徐州',
+                  map:map
+            })
+            AMap.event.addListener(autocomplete, "select", function(e){
+               ////关键字查询
+               placeSearch.setCity(e.poi.adcode);
+               placeSearch.search(e.poi.name)
+            });
+          });
+           
+          //步行导航
+
+        var walking = new AMap.Walking({
+        map: map,
+        panel: "result",
+         }); 
+
+         function walkway(){
+        walking.search([
+          { keyword: document.getElementById("chufainput").value, city: "徐州" },
+          { keyword: document.getElementById("mudiinput").value, city: "徐州" },
+        ]
+        );
+    }
+    
+          //刷新页面
+      function shuaxin() {
+        location.reload([false]);
+      }
+
+      function qingkong1(){
+        var file=document.getElementById('tipinput');
+        file.value='';
+      }
+      function qingkong2(){
+        var file1=document.getElementById('chufainput');
+        var file2=document.getElementById('mudiinput');
+        file1.value='';
+        file2.value='';
+      }
+
+
+      
+        </script>
+    </body>
+</html>
+
